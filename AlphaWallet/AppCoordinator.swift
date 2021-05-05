@@ -3,6 +3,8 @@
 import Foundation
 import UIKit
 
+
+
 class AppCoordinator: NSObject, Coordinator {
     private let config = Config()
     private let legacyFileBasedKeystore: LegacyFileBasedKeystore
@@ -54,10 +56,18 @@ class AppCoordinator: NSObject, Coordinator {
         setupSplashViewController(on: navigationController)
     }
 
+    ///
+    ///
+    ///
     func start() {
         if Features.isLanguageSwitcherDisabled {
             Config.setLocale(.system)
         }
+
+
+        NSLog("main app run")
+        logPrint()
+
 
         if isRunningTests() {
             startImpl()

@@ -46,6 +46,10 @@ target 'AlphaWallet' do
   # add ssh-key to bitbucket, fix pod install
   pod 'PaperTrailLumberjack/Swift'
 
+  # color log: 
+  pod 'SwiftyBeaver'
+
+
   target 'AlphaWalletTests' do
       inherit! :search_paths
       # Pods for testing
