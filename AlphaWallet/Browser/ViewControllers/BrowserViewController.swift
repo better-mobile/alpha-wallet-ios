@@ -15,6 +15,12 @@ protocol BrowserViewControllerDelegate: class {
     func handleCustomUrlScheme(_ url: URL, inBrowserViewController viewController: BrowserViewController)
 }
 
+///*******************************************************************************
+
+
+///
+///
+///
 final class BrowserViewController: UIViewController {
     private var myContext = 0
     private let account: Wallet
@@ -65,12 +71,29 @@ final class BrowserViewController: UIViewController {
         return progressView
     }()
 
+    ///*******************************************************************************
+    
+    ///
+    /// inject js
+    ///
     lazy var config: WKWebViewConfiguration = {
+        
+        ///
+        /// todo x: inject js
+        ///
         let config = WKWebViewConfiguration.make(forType: .dappBrowser(server), address: account.address, in: ScriptMessageProxy(delegate: self))
+        
+        
+        ///
         config.websiteDataStore = WKWebsiteDataStore.default()
         return config
     }()
 
+    
+    ///*******************************************************************************
+    
+    
+    
     init(account: Wallet, server: RPCServer) {
         self.account = account
         self.server = server
@@ -140,6 +163,10 @@ final class BrowserViewController: UIViewController {
     }
 
     private func injectUserAgent() {
+        
+        ///
+        /// call js
+        ///
         webView.evaluateJavaScript("navigator.userAgent") { [weak self] result, _ in
             guard let strongSelf = self, let currentUserAgent = result as? String else { return }
             strongSelf.webView.customUserAgent = currentUserAgent + " " + strongSelf.userClient
@@ -151,18 +178,40 @@ final class BrowserViewController: UIViewController {
         webView.load(URLRequest(url: url))
     }
 
+    ///*******************************************************************************
+    
+    ///
+    /// todo x:  call js
+    ///
     func notifyFinish(callbackID: Int, value: Result<DappCallback, DAppError>) {
         let script: String = {
             switch value {
             case .success(let result):
+                ///
+                /// call js
+                ///
                 return "executeCallback(\(callbackID), null, \"\(result.value.object)\")"
             case .failure(let error):
                 return "executeCallback(\(callbackID), \"\(error.message)\", null)"
             }
         }()
+        
+        
+        
+        /// call js here
+        ///
+        ///
         webView.evaluateJavaScript(script, completionHandler: nil)
+        
+        logger.debug("notifyFinish() - web3 call js: callback()")
+        
+        
     }
 
+    
+    ///*******************************************************************************
+    
+    
     func reload() {
         hideErrorView()
         webView.reload()

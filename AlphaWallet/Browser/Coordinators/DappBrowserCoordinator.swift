@@ -148,15 +148,29 @@ final class DappBrowserCoordinator: NSObject, Coordinator {
 
     private var pendingTransaction: PendingTransaction = .none
 
+    /// todo x:
     private func executeTransaction(account: AlphaWallet.Address, action: DappAction, callbackID: Int, transaction: UnconfirmedTransaction, type: ConfirmType, server: RPCServer) {
         pendingTransaction = .data(callbackID: callbackID)
         let ethPrice = nativeCryptoCurrencyPrices[server]
         let coordinator = TransactionConfirmationCoordinator(presentingViewController: navigationController, session: session, transaction: transaction, configuration: .dappTransaction(confirmType: type, keystore: keystore, ethPrice: ethPrice), analyticsCoordinator: analyticsCoordinator)
         coordinator.delegate = self
+        
+        
+        ///
+        ///
+        ///
         addCoordinator(coordinator)
+        
+        
+        ///
+        /// todo x:
+        ///
         coordinator.start(fromSource: .browser)
     }
 
+    ///
+    ///
+    ///
     private func ethCall(callbackID: Int, from: AlphaWallet.Address?, to: AlphaWallet.Address?, data: String, server: RPCServer) {
         let request = EthCallRequest(from: from, to: to, data: data)
         firstly {
@@ -372,8 +386,14 @@ extension DappBrowserCoordinator: TransactionConfirmationCoordinatorDelegate {
         coordinator.close { [weak self] in
             guard let strongSelf = self else { return }
 
+            ///
+            /// pending tx:
+            ///
             switch strongSelf.pendingTransaction {
             case .data(let callbackID):
+                ///
+                ///
+                ///
                 strongSelf.browserViewController.notifyFinish(callbackID: callbackID, value: .failure(DAppError.cancelled))
             case .none:
                 break
@@ -396,6 +416,10 @@ extension DappBrowserCoordinator: TransactionConfirmationCoordinatorDelegate {
         navigationController.dismiss(animated: true)
     }
 
+    
+    ///
+    /// sign tx, send tx
+    ///
     func coordinator(_ coordinator: TransactionConfirmationCoordinator, didCompleteTransaction result: TransactionConfirmationResult) {
         coordinator.close { [weak self] in
             guard let strongSelf = self, let delegate = strongSelf.delegate else { return }
@@ -404,17 +428,42 @@ extension DappBrowserCoordinator: TransactionConfirmationCoordinatorDelegate {
             case (.data(let callbackID), .confirmationResult(let type)):
                 switch type {
                 case .signedTransaction(let data):
+                    
+                    ///
+                    /// callback
+                    ///
                     let callback = DappCallback(id: callbackID, value: .signTransaction(data))
+                    
+                    ///
+                    /// call js: callback
+                    ///
                     strongSelf.browserViewController.notifyFinish(callbackID: callbackID, value: .success(callback))
+                    
+                    
+                    logger.debug(".signedTransaction: call, callbackID: ", context: [callbackID, callback])
+                    
+                    
                     //TODO do we need to do this for a pending transaction?
     //                    strongSelf.delegate?.didSentTransaction(transaction: transaction, inCoordinator: strongSelf)
                 case .sentTransaction(let transaction):
                     // on send transaction we pass transaction ID only.
                     let data = Data(_hex: transaction.id)
                     let callback = DappCallback(id: callbackID, value: .sentTransaction(data))
+                    
+                    ///
+                    /// call js:  callback
+                    ///
                     strongSelf.browserViewController.notifyFinish(callbackID: callbackID, value: .success(callback))
 
+                    ///
+                    ///
+                    ///
                     delegate.didSentTransaction(transaction: transaction, inCoordinator: strongSelf)
+                    
+                    logger.debug(".sentTransaction: call, callbackID: ", context: [callbackID, callback])
+                    
+    
+                    
                 case .sentRawTransaction:
                     break
                 }
@@ -436,7 +485,14 @@ extension DappBrowserCoordinator: BrowserViewControllerDelegate {
     ///
     func didCall(action: DappAction, callbackID: Int, inBrowserViewController viewController: BrowserViewController) {
         guard case .real(let account) = session.account.type else {
+            
+            ///
+            /// call js:
+            ///
             browserViewController.notifyFinish(callbackID: callbackID, value: .failure(DAppError.cancelled))
+            
+            
+            ///
             navigationController.topViewController?.displayError(error: InCoordinatorError.onlyWatchAccount)
             return
         }
@@ -446,13 +502,23 @@ extension DappBrowserCoordinator: BrowserViewControllerDelegate {
         /// sign tx
         ///
         case .signTransaction(let unconfirmedTransaction):
+            ///
+            ///
+            ///
             executeTransaction(account: account, action: action, callbackID: callbackID, transaction: unconfirmedTransaction, type: .signThenSend, server: server)
             
         ///
         /// send tx
         ///
         case .sendTransaction(let unconfirmedTransaction):
+            ///
+            ///
+            ///
             executeTransaction(account: account, action: action, callbackID: callbackID, transaction: unconfirmedTransaction, type: .signThenSend, server: server)
+        
+        ///
+        ///
+        ///
         case .signMessage(let hexMessage):
             signMessage(with: .message(hexMessage.toHexData), account: account, callbackID: callbackID)
         case .signPersonalMessage(let hexMessage):
@@ -461,10 +527,17 @@ extension DappBrowserCoordinator: BrowserViewControllerDelegate {
             signMessage(with: .typedMessage(typedData), account: account, callbackID: callbackID)
         case .signTypedMessageV3(let typedData):
             signMessage(with: .eip712v3And4(typedData), account: account, callbackID: callbackID)
+        
+        ///
+        ///
+        ///
         case .ethCall(from: let from, to: let to, data: let data):
             //Must use unchecked form for `Address `because `from` and `to` might be 0x0..0. We assume the dapp author knows what they are doing
             let from = AlphaWallet.Address(uncheckedAgainstNullAddress: from)
             let to = AlphaWallet.Address(uncheckedAgainstNullAddress: to)
+            ///
+            ///
+            ///
             ethCall(callbackID: callbackID, from: from, to: to, data: data, server: server)
         case .unknown, .sendRawTransaction:
             break

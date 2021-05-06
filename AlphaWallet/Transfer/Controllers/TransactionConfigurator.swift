@@ -394,14 +394,24 @@ class TransactionConfigurator {
         }
     }
 
+    /// todo x:
     func start() {
+        
+        /// todo x:
         estimateGasPrice()
         if !isGasLimitSpecifiedByTransaction {
             estimateGasLimit()
         }
+        
+        /// todo x:
         computeNonce()
+        
+        
+        logger.info("call start, gas price, nonce")
+        
     }
 
+    /// todo x:
     private func useNonce(_ nonce: Int) {
         var customConfig = configurations.custom
         if let existingNonce = customConfig.nonce, existingNonce > 0 {
@@ -424,6 +434,8 @@ class TransactionConfigurator {
         }
     }
 
+    
+    /// todo x:
     private func computeNonce() {
         if let nonce = transaction.nonce, nonce > 0 {
             useNonce(Int(nonce))

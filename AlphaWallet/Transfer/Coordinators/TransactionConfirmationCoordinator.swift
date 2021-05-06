@@ -100,6 +100,9 @@ class TransactionConfirmationCoordinator: Coordinator {
         self.presentingViewController = presentingViewController
     }
 
+    ///
+    /// todo x:
+    ///
     func start(fromSource source: Analytics.TransactionConfirmationSource) {
         guard let keyWindow = UIApplication.shared.keyWindow else { return }
 
@@ -110,7 +113,14 @@ class TransactionConfirmationCoordinator: Coordinator {
         }
 
         configurator.delegate = self
+        
+        ///
+        ///
+        ///
         configurator.start()
+        
+        ///
+        ///
         confirmationViewController.reloadView()
 
         logStartActionSheetForTransactionConfirmation(source: source)

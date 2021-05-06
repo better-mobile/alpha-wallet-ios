@@ -120,6 +120,11 @@ class ActivityViewController: UIViewController {
         navigationItem.largeTitleDisplayMode = .never
     }
 
+    
+    ///***********************************************************************************
+    
+    
+    
     func configure(viewModel: ActivityViewModel) {
         self.viewModel = viewModel
 
@@ -161,6 +166,10 @@ class ActivityViewController: UIViewController {
             let (html: html, hash: hash) = viewModel.activity.viewHtml
             tokenScriptRendererView.loadHtml(html, hash: hash)
 
+            
+            ///
+            ///
+            ///
             tokenScriptRendererView.update(withId: .init(viewModel.activity.id), resolvedTokenAttributeNameValues: tokenAttributes, resolvedCardAttributeNameValues: cardAttributes, isFirstUpdate: isFirstLoad)
             isFirstLoad = false
         }

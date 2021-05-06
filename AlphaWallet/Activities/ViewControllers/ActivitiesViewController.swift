@@ -258,6 +258,13 @@ extension ActivitiesViewController: UITableViewDataSource {
         return viewModel.numberOfSections
     }
 
+    
+    
+    ///***********************************************************************************
+    
+    
+    
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = viewModel.item(for: indexPath.row, section: indexPath.section)
         switch item {
@@ -269,7 +276,16 @@ extension ActivitiesViewController: UITableViewDataSource {
                 return cell
             case .none:
                 let cell: ActivityViewCell = tableView.dequeueReusableCell(for: indexPath)
+                
+                ///
+                /// call inject js
+                ///
                 cell.configure(viewModel: .init(activity: activity))
+                
+                
+                
+                ///
+                ///
                 return cell
             }
         case .transactionRow(let transactionRow):

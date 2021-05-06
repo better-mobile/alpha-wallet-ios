@@ -60,6 +60,15 @@ class ActivityViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    
+    
+    ///***********************************************************************************
+    
+    
+    
+    ///
+    /// inject js
+    ///
     func configure(viewModel: ActivityCellViewModel) {
         self.viewModel = viewModel
 
@@ -74,7 +83,22 @@ class ActivityViewCell: UITableViewCell {
 
         let tokenAttributes = viewModel.activity.values.token
         let cardAttributes = viewModel.activity.values.card
+        
+        
+        
+        ///***********************************************************************************
+        
+        
+        
+        ///
+        /// inject 
+        ///
         tokenScriptRendererView.update(withId: .init(viewModel.activity.id), resolvedTokenAttributeNameValues: tokenAttributes, resolvedCardAttributeNameValues: cardAttributes, isFirstUpdate: isFirstLoad)
+        
+        
+        
+        ///
+        ///
         isFirstLoad = false
     }
 }

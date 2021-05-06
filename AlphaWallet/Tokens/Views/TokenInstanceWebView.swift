@@ -52,8 +52,18 @@ class TokenInstanceWebView: UIView {
     private var hashOfCurrentHtml: Int?
     private var hashOfLoadedHtml: Int?
     lazy private var heightConstraint = heightAnchor.constraint(equalToConstant: 100)
+    
+    ///
+    ///
+    ///
     lazy private var webView: WKWebView = {
+        ///
+        /// inject js
+        ///
         let webViewConfig = WKWebViewConfiguration.make(forType: .tokenScriptRenderer, address: wallet.address, in: ScriptMessageProxy(delegate: self))
+        
+        
+        ///
         webViewConfig.websiteDataStore = .default()
         return .init(frame: .zero, configuration: webViewConfig)
     }()
@@ -173,9 +183,22 @@ class TokenInstanceWebView: UIView {
             strongSelf.update(withTokenHolder: tokenHolder, isFungible: isFungible, isFirstUpdate: false)
         }
 
+        
+        
+        ///***********************************************************************************
+        
+        ///
+        ///
+        ///
         update(withId: tokenHolder.tokenIds[0], resolvedTokenAttributeNameValues: resolvedTokenAttributeNameValues, resolvedCardAttributeNameValues: resolvedCardAttributeNameValues, isFirstUpdate: isFirstUpdate)
     }
 
+    
+    ///***********************************************************************************
+    
+    ///
+    /// inject js:
+    ///
     func update(withId id: BigUInt, resolvedTokenAttributeNameValues: [AttributeId: AssetInternalValue], resolvedCardAttributeNameValues: [AttributeId: AssetInternalValue], isFirstUpdate: Bool = true) {
         var tokenData = [AttributeId: String]()
         let convertor = AssetAttributeToJavaScriptConvertor()
@@ -197,6 +220,12 @@ class TokenInstanceWebView: UIView {
         let combinedData = tokenData.merging(cardData, uniquingKeysWith: { _, new in new })
         let combinedDataString = combinedData.map { name, value in "\(name): \(value)," }.joined()
 
+        
+        ///***********************************************************************************
+        
+        
+        
+        
         var string = "\nweb3.tokens.data.currentInstance = {\n"
         string += combinedDataString
         string += "\n}"
@@ -235,12 +264,26 @@ class TokenInstanceWebView: UIView {
 
         //Important to inject JavaScript differently depending on whether this is the first time it's loaded because the HTML document may not be ready yet. Seems like it is necessary for `afterDocumentIsLoaded` to always be true here in order to avoid `Can't find variable: web3` errors when used for token cards
         if isStandalone {
+            
+            
+            ///
+            ///
+            ///
+            ///
             inject(javaScript: javaScript, afterDocumentIsLoaded: isFirstUpdate)
         } else {
+            
+            ///
+            ///
+            ///
             inject(javaScript: javaScript, afterDocumentIsLoaded: true)
         }
     }
 
+    
+    ///***********************************************************************************
+    
+    
     private func unresolvedAttributesDependentOnProps(tokenHolder: TokenHolder) -> [AttributeId: AssetAttributeSyntaxValue] {
         guard !localRefs.isEmpty else { return .init() }
         let xmlHandler = XMLHandler(contract: tokenHolder.contractAddress, tokenType: tokenHolder.tokenType, assetDefinitionStore: assetDefinitionStore)
@@ -269,6 +312,13 @@ class TokenInstanceWebView: UIView {
         return results
     }
 
+    
+    ///***********************************************************************************
+    
+    
+    ///
+    ///
+    ///
     @discardableResult func inject(javaScript: String, afterDocumentIsLoaded: Bool = false) -> Promise<Any?>? {
         if let lastInjectedJavaScript = lastInjectedJavaScript, lastInjectedJavaScript == javaScript {
             return nil
@@ -283,10 +333,19 @@ class TokenInstanceWebView: UIView {
                                        """
         if afterDocumentIsLoaded {
             let userScript = WKUserScript(source: javaScriptWrappedInScope, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
+            
+            
+            ///
+            ///
+            ///
             webView.configuration.userContentController.addUserScript(userScript)
             return nil
         } else {
             return Promise { seal in
+                
+                ///
+                /// call js
+                ///
                 webView.evaluateJavaScript(javaScriptWrappedInScope) { something, error in
                     if let error = error {
                         seal.reject(error)
@@ -298,6 +357,10 @@ class TokenInstanceWebView: UIView {
         }
     }
 
+    
+    ///***********************************************************************************
+    
+    
     func loadHtml(_ html: String, hash: Int) {
         hashOfCurrentHtml = hash
         if let cachedHeight = TokenInstanceWebView.htmlHeightCache[hash] {
@@ -318,6 +381,11 @@ class TokenInstanceWebView: UIView {
 
     private func makeIntroductionWebViewFullHeight(renderingAttempt: RenderingAttempt) {
         let forLoadId: Int? = loadId
+        
+        
+        ///
+        /// call js
+        ///
         webView.evaluateJavaScript("document.body.scrollHeight", completionHandler: { [weak self] height, _ in
             guard let strongSelf = self else { return }
             guard strongSelf.loadId == forLoadId else { return }
@@ -517,6 +585,11 @@ extension TokenInstanceWebView {
                 return "executeCallback(\(callbackID), \"\(error)\", null)"
             }
         }()
+        
+        
+        ///
+        /// call js
+        ///
         webView.evaluateJavaScript(script, completionHandler: nil)
     }
 
@@ -528,6 +601,11 @@ extension TokenInstanceWebView {
                 return "executeTokenScriptCallback(\(callbackID), null)"
             }
         }()
+        
+        
+        ///
+        /// call js 
+        ///
         webView.evaluateJavaScript(script, completionHandler: nil)
     }
 }

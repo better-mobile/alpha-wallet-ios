@@ -9,10 +9,23 @@ enum WebViewType {
     case tokenScriptRenderer
 }
 
+
+///
+/// todo x: inject web3.js
+///
 extension WKWebViewConfiguration {
 
+    ///
+    /// todo x:
+    ///
     static func make(forType type: WebViewType, address: AlphaWallet.Address, in messageHandler: WKScriptMessageHandler) -> WKWebViewConfiguration {
         let webViewConfig = WKWebViewConfiguration()
+        
+        logger.debug("ready to inject web3.js sdk")
+        
+        ///
+        ///
+        ///
         var js = ""
 
         switch type {
@@ -20,14 +33,34 @@ extension WKWebViewConfiguration {
             guard
                     let bundlePath = Bundle.main.path(forResource: "AlphaWalletWeb3Provider", ofType: "bundle"),
                     let bundle = Bundle(path: bundlePath) else { return webViewConfig }
+            
+            ///
+            /// js file
+            ///
             if let filepath = bundle.path(forResource: "AlphaWallet-min", ofType: "js") {
                 do {
                     js += try String(contentsOfFile: filepath)
                 } catch { }
             }
+            
+            ///
+            /// todo x: inject js file
+            ///
             js += javaScriptForDappBrowser(server: server, address: address)
+            
+            logger.debug("make: dapp browser, js: ", context: js)
+            
         case .tokenScriptRenderer:
+            
+            ///
+            /// merge js file
+            ///
             js += javaScriptForTokenScriptRenderer(address: address)
+            
+            
+            ///
+            ///
+            ///
             js += """
                   \n
                   web3.tokens = {
@@ -66,6 +99,11 @@ extension WKWebViewConfiguration {
         return webViewConfig
     }
 
+    
+    
+    ///
+    /// todo x: inject js
+    ///
     fileprivate static func javaScriptForDappBrowser(server: RPCServer, address: AlphaWallet.Address) -> String {
         return """
                //Space is needed here because it is sometimes cut off by websites. 
@@ -142,6 +180,10 @@ extension WKWebViewConfiguration {
              """
     }
 
+    
+    ///
+    /// todo x: js file
+    ///
     fileprivate static func javaScriptForTokenScriptRenderer(address: AlphaWallet.Address) -> String {
         return """
                window.web3CallBacks = {}

@@ -146,12 +146,22 @@ class TokenInstanceActionViewController: UIViewController, TokenVerifiableStatus
         tokenScriptRendererView.update(withTokenHolder: tokenHolder, cardLevelAttributeValues: cardLevelAttributeValues, isFungible: isFungible)
     }
 
+    
+    ///***********************************************************************************
+    
+    
+    
     @objc func proceed() {
         let javaScriptToCallConfirm = """
                                       if (window.onConfirm != null) {
                                         onConfirm()
                                       }
                                       """
+        
+        
+        ///
+        ///
+        ///
         tokenScriptRendererView.inject(javaScript: javaScriptToCallConfirm)
 
         guard action.hasTransactionFunction else { return }
