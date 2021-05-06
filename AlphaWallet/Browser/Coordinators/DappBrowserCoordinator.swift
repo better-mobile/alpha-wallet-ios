@@ -585,7 +585,17 @@ extension DappBrowserCoordinator: BrowserHistoryViewControllerDelegate {
     }
 }
 
+
+///*******************************************************************************
+
+
+
 extension DappBrowserCoordinator: WKUIDelegate {
+    
+    
+    ///
+    ///
+    ///
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
         if navigationAction.targetFrame == nil {
             browserViewController.webView.load(navigationAction.request)

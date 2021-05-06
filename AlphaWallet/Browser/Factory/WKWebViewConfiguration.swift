@@ -10,6 +10,10 @@ enum WebViewType {
 }
 
 
+///***********************************************************************************
+
+
+
 ///
 /// todo x: inject web3.js
 ///
@@ -78,6 +82,12 @@ extension WKWebViewConfiguration {
                   }
                   """
         }
+        
+        ///***********************************************************************************
+        
+        ///
+        /// js:
+        ///
         let userScript = WKUserScript(source: js, injectionTime: .atDocumentStart, forMainFrameOnly: false)
         webViewConfig.userContentController.addUserScript(userScript)
 
@@ -89,16 +99,26 @@ extension WKWebViewConfiguration {
             webViewConfig.setURLSchemeHandler(webViewConfig, forURLScheme: "tokenscript-resource")
         }
 
+        ///***********************************************************************************
+        
+        
+        
         webViewConfig.userContentController.add(messageHandler, name: Method.signTransaction.rawValue)
         webViewConfig.userContentController.add(messageHandler, name: Method.signPersonalMessage.rawValue)
         webViewConfig.userContentController.add(messageHandler, name: Method.signMessage.rawValue)
         webViewConfig.userContentController.add(messageHandler, name: Method.signTypedMessage.rawValue)
         webViewConfig.userContentController.add(messageHandler, name: Method.ethCall.rawValue)
+        
+        
+        ///***********************************************************************************
+        
+        
         //TODO extract like `Method.signTypedMessage.rawValue` when we have more than 1
         webViewConfig.userContentController.add(messageHandler, name: TokenInstanceWebView.SetProperties.setActionProps)
         return webViewConfig
     }
 
+    ///***********************************************************************************
     
     
     ///
@@ -180,6 +200,7 @@ extension WKWebViewConfiguration {
              """
     }
 
+    ///***********************************************************************************
     
     ///
     /// todo x: js file
@@ -223,6 +244,11 @@ extension WKWebViewConfiguration {
                """
     }
 
+    ///***********************************************************************************
+    
+    
+    
+    
     fileprivate static func contentBlockingRulesJson() -> String {
         //TODO read from TokenScript, when it's designed and available
         let whiteListedUrls = [

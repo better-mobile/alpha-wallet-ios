@@ -53,6 +53,10 @@ class TokenInstanceWebView: UIView {
     private var hashOfLoadedHtml: Int?
     lazy private var heightConstraint = heightAnchor.constraint(equalToConstant: 100)
     
+    
+    
+    ///***********************************************************************************
+    
     ///
     ///
     ///
@@ -67,6 +71,12 @@ class TokenInstanceWebView: UIView {
         webViewConfig.websiteDataStore = .default()
         return .init(frame: .zero, configuration: webViewConfig)
     }()
+    
+    
+    
+    ///***********************************************************************************
+    
+    
     //Used to track asynchronous calls are called for correctly
     private var loadId: Int?
     private var lastInjectedJavaScript: String?
