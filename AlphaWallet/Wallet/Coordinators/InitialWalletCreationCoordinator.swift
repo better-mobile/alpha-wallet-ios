@@ -8,6 +8,10 @@ protocol InitialWalletCreationCoordinatorDelegate: class {
     func didAddAccount(_ account: Wallet, in coordinator: InitialWalletCreationCoordinator)
 }
 
+
+///**************************************************************************
+
+/// 钱包初始化:
 class InitialWalletCreationCoordinator: Coordinator {
     private let keystore: Keystore
     private let config: Config
@@ -31,9 +35,20 @@ class InitialWalletCreationCoordinator: Coordinator {
         navigationController.setNavigationBarHidden(false, animated: true)
     }
 
+    
+    ///**************************************************************************
+    
+    
+    
+    /// 钱包初始化:
     func start() {
         let coordinator = WalletCoordinator(config: config, navigationController: navigationController, keystore: keystore, analyticsCoordinator: analyticsCoordinator)
         coordinator.delegate = self
+        
+        
+        ///
+        /// 钱包初始化
+        ///
         coordinator.start(.addInitialWallet)
 
         addCoordinator(coordinator)

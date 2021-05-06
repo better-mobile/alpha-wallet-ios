@@ -38,6 +38,11 @@ class AppTracker {
         self.defaults = defaults
     }
 
+    
+    ///**************************************************************************
+    
+    
+    ///
     func start() {
         launchCountTotal += launchCountTotal
         launchCountForCurrentBuild += 1

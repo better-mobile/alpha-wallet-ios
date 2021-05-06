@@ -23,6 +23,8 @@ class AppCoordinator: NSObject, Coordinator {
         return coordinators.first { $0 is UniversalLinkCoordinator } as? UniversalLinkCoordinator
     }
 
+    
+    /// 钱包初始化:
     private var initialWalletCreationCoordinator: InitialWalletCreationCoordinator? {
         return coordinators.compactMap { $0 as? InitialWalletCreationCoordinator }.first
     }
@@ -35,7 +37,18 @@ class AppCoordinator: NSObject, Coordinator {
     }()
 
     private var analyticsService: AnalyticsServiceType
+    
+    
+    
+    ///**************************************************************************
+    
+    
+    
+    /// 
     let navigationController: UINavigationController
+    
+    
+    ///
     var coordinators: [Coordinator] = []
     var inCoordinator: InCoordinator? {
         return coordinators.first { $0 is InCoordinator } as? InCoordinator
@@ -56,8 +69,10 @@ class AppCoordinator: NSObject, Coordinator {
         setupSplashViewController(on: navigationController)
     }
 
+    ///**************************************************************************
+    
     ///
-    ///
+    /// app start:
     ///
     func start() {
         if Features.isLanguageSwitcherDisabled {
@@ -71,19 +86,28 @@ class AppCoordinator: NSObject, Coordinator {
 
 
         if isRunningTests() {
+            
+            /// 启动:
             startImpl()
         } else {
             DispatchQueue.main.async {
+                
+                /// 启动:
                 let succeeded = self.startImpl()
                 if succeeded {
                     return
                 } else {
+                    /// 重试+ 启动
                     self.retryStart()
                 }
             }
         }
     }
 
+    
+    ///**************************************************************************
+    
+    
     private func setupSplashViewController(on navigationController: UINavigationController) {
         navigationController.viewControllers = [
             SplashViewController()
@@ -91,8 +115,13 @@ class AppCoordinator: NSObject, Coordinator {
         navigationController.setNavigationBarHidden(true, animated: false)
     }
 
+    /// 启动:
     private func retryStart() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            
+            ///
+            /// 启动入口:
+            ///
             let succeeded = self.startImpl()
             if succeeded {
                 return
@@ -102,23 +131,47 @@ class AppCoordinator: NSObject, Coordinator {
         }
     }
 
+    
+    
+    ///**************************************************************************
+    
+    
+    
+    /// todo x: 关键入口:
     //This function exist to handle what we think is a rare (but hard to reproduce) occurrence that NSUserDefaults are not accessible for a short while during startup. If that happens, we delay the "launch" and check again. If the app is killed by the iOS launch time watchdog, so be it. Better than to let the user create a wallet and wipe the list of wallets and lose access
     @discardableResult private func startImpl() -> Bool {
         if MigrationInitializer.hasRealmDatabasesForWallet && !keystore.hasWallets && !isRunningTests() {
             return false
         }
 
+        
+        logger.debug("startImpl() - app start")
+        
+        ///
+        ///
+        ///
         MigrationInitializer.removeWalletsIfRealmFilesMissed(keystore: keystore)
 
+        
+        /// 初始化:
         initializers()
         appTracker.start()
+        
+        /// 推送 通知
         handleNotifications()
+        
+        /// app 样式:
         applyStyle()
 
         setupAssetDefinitionStoreCoordinator()
+        
+        ///
         migrateToStoringRawPrivateKeysInKeychain()
 
         if keystore.hasWallets {
+            ///
+            /// 钱包初始化
+            ///
             showTransactions(for: keystore.currentWallet)
         } else {
             showInitialWalletCoordinator()
@@ -128,6 +181,10 @@ class AppCoordinator: NSObject, Coordinator {
         return true
     }
 
+
+
+    ///**************************************************************************
+    
     private func migrateToStoringRawPrivateKeysInKeychain() {
         legacyFileBasedKeystore.migrateKeystoreFilesToRawPrivateKeysInKeychain()
     }
@@ -152,14 +209,29 @@ class AppCoordinator: NSObject, Coordinator {
         return urlSchemeHandler.handleOpen(url: url)
     }
 
+    
+    ///**************************************************************************
+    
+    
+    
     private func setupAssetDefinitionStoreCoordinator() {
         let coordinator = AssetDefinitionStoreCoordinator(assetDefinitionStore: assetDefinitionStore)
         coordinator.delegate = self
         addCoordinator(coordinator)
+        
+        
+        ///
+        ///
+        ///
         coordinator.start()
     }
 
     @discardableResult func showTransactions(for wallet: Wallet) -> InCoordinator {
+        
+        
+        ///
+        /// 钱包初始化
+        ///
         if let coordinator = initialWalletCreationCoordinator {
             removeCoordinator(coordinator)
         }
@@ -176,7 +248,18 @@ class AppCoordinator: NSObject, Coordinator {
         )
 
         coordinator.delegate = self
+        
+        ///**************************************************************************
+        
+        
+        ///
+        ///
+        ///
         coordinator.start()
+        
+        
+        
+        
         addCoordinator(coordinator)
 
         return coordinator
@@ -190,6 +273,11 @@ class AppCoordinator: NSObject, Coordinator {
         }
     }
 
+    ///**************************************************************************
+    
+    
+    
+    
     private func initializers() {
         var paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .allDomainsMask, true).compactMap { URL(fileURLWithPath: $0) }
         paths.append(legacyFileBasedKeystore.keystoreDirectory)
@@ -204,9 +292,17 @@ class AppCoordinator: NSObject, Coordinator {
         }
     }
 
+    ///**************************************************************************
+    
+    /// 推送, 通知:
     private func handleNotifications() {
         UIApplication.shared.applicationIconBadgeNumber = 0
         let coordinator = PushNotificationsCoordinator()
+        
+        
+        ///
+        ///
+        ///
         coordinator.start()
         addCoordinator(coordinator)
     }

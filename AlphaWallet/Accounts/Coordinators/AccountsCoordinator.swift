@@ -86,6 +86,11 @@ class AccountsCoordinator: Coordinator {
         }
 	}
 
+    
+    ///**************************************************************************
+    
+    
+    
     private func importOrCreateWallet(entryPoint: WalletEntryPoint) {
         let coordinator = WalletCoordinator(config: config, keystore: keystore, analyticsCoordinator: analyticsCoordinator)
         if case .createInstantWallet = entryPoint {
@@ -93,6 +98,11 @@ class AccountsCoordinator: Coordinator {
         }
         coordinator.delegate = self
         addCoordinator(coordinator)
+        
+        
+        ///
+        ///
+        ///
         let showUI = coordinator.start(entryPoint)
         if showUI {
             coordinator.navigationController.makePresentationFullScreenForiOS13Migration()

@@ -3,6 +3,8 @@
 import UIKit
 import PromiseKit
 
+
+///
 protocol SettingsViewControllerDelegate: class, CanOpenURL {
     func settingsViewControllerAdvancedSettingsSelected(in controller: SettingsViewController)
     func settingsViewControllerChangeWalletSelected(in controller: SettingsViewController)

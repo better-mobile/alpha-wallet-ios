@@ -155,15 +155,28 @@ class InCoordinator: NSObject, Coordinator {
         super.init()
     }
 
+    
+    ///***********************************************************************************************
+    
+    ///
+    ///
+    ///
     func start() {
 
+        ///
+        /// 底部导航栏:
+        ///
         showTabBar(for: wallet)
         checkDevice()
 
         helpUsCoordinator.start()
         addCoordinator(helpUsCoordinator)
         fetchXMLAssetDefinitions()
+        
+        ///
         listOfBadTokenScriptFilesChanged(fileNames: assetDefinitionStore.listOfBadTokenScriptFiles + assetDefinitionStore.conflictingTokenScriptFileNames.all)
+        
+        ///
         setupWatchingTokenScriptFileChangesToFetchEvents()
 
         urlSchemeCoordinator.processPendingURL(in: self)
@@ -354,6 +367,9 @@ class InCoordinator: NSObject, Coordinator {
         }
     }
 
+    ///***********************************************************************************************
+    
+    /// 底部导航栏:
     func showTabBar(for account: Wallet) {
         keystore.recentlyUsedWallet = account
         rampBuyService.account = account

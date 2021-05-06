@@ -48,7 +48,8 @@ target 'AlphaWallet' do
 
   # color log: 
   pod 'SwiftyBeaver'
-
+  # pod 'XCGLogger', '~> 7.0.1'
+  pod 'SwiftTrace'
 
   target 'AlphaWalletTests' do
       inherit! :search_paths

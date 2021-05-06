@@ -30,6 +30,11 @@ class LockEnterPasscodeCoordinator: Coordinator {
 		window.isHidden = true
 	}
 
+    
+    
+    ///**************************************************************************
+    
+    
 	func showAuthentication() {
 		guard lock.isPasscodeSet else { return }
 		lockEnterPasscodeViewController.showKeyboard()

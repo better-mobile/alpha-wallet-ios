@@ -38,6 +38,9 @@ extension WKWebViewConfiguration {
                     let bundlePath = Bundle.main.path(forResource: "AlphaWalletWeb3Provider", ofType: "bundle"),
                     let bundle = Bundle(path: bundlePath) else { return webViewConfig }
             
+            
+            logger.debug("js file path: ", context: bundlePath)
+            log.debug("")
             ///
             /// js file
             ///
@@ -52,7 +55,7 @@ extension WKWebViewConfiguration {
             ///
             js += javaScriptForDappBrowser(server: server, address: address)
             
-            logger.debug("make: dapp browser, js: ", context: js)
+            logger.debug("make: dapp browser, js: server, address ", context: [server, address])
             
         case .tokenScriptRenderer:
             

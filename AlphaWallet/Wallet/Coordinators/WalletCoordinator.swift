@@ -31,15 +31,34 @@ class WalletCoordinator: Coordinator {
         navigationController.navigationBar.isTranslucent = false
     }
 
+    
+    ///**************************************************************************
+    
+    
+    
+    
     ///Return true if caller should proceed to show UI (`navigationController`)
     @discardableResult func start(_ entryPoint: WalletEntryPoint) -> Bool {
         switch entryPoint {
+        ///**************************************************************************
+        
+        
+        ///
+        /// 导入钱包:
+        ///
         case .importWallet:
             let controller = ImportWalletViewController(keystore: keystore, analyticsCoordinator: analyticsCoordinator)
             controller.delegate = self
             controller.navigationItem.leftBarButtonItem = UIBarButtonItem(title: R.string.localizable.cancel(), style: .plain, target: self, action: #selector(dismiss))
             navigationController.viewControllers = [controller]
             importWalletViewController = controller
+            
+        ///**************************************************************************
+        
+        
+        ///
+        ///
+        ///
         case .watchWallet(let address):
             let controller = ImportWalletViewController(keystore: keystore, analyticsCoordinator: analyticsCoordinator)
             controller.delegate = self
@@ -48,9 +67,21 @@ class WalletCoordinator: Coordinator {
             controller.showWatchTab()
             navigationController.viewControllers = [controller]
             importWalletViewController = controller
+        
+        ///**************************************************************************
+        
+        
+        ///
+        ///
+        ///
         case .createInstantWallet:
             createInstantWallet()
             return false
+            
+
+        ///
+        ///
+        ///
         case .addInitialWallet:
             let controller = CreateInitialWalletViewController(keystore: keystore, analyticsCoordinator: analyticsCoordinator)
             controller.delegate = self
@@ -79,7 +110,12 @@ class WalletCoordinator: Coordinator {
             }
         }
     }
-
+    
+    
+    
+    ///**************************************************************************
+    
+    
     //TODO Rename this is create in both settings and new install
     func createInstantWallet() {
         navigationController.displayLoading(text: R.string.localizable.walletCreateInProgress(), animated: false)
@@ -101,11 +137,19 @@ class WalletCoordinator: Coordinator {
         }
     }
 
+    
+    ///**************************************************************************
+    
+    
     private func addWalletWith(entryPoint: WalletEntryPoint) {
         //Intentionally creating an instance of myself
         let coordinator = WalletCoordinator(config: config, keystore: keystore, analyticsCoordinator: analyticsCoordinator)
         coordinator.delegate = self
         addCoordinator(coordinator)
+        
+        ///
+        ///
+        ///
         coordinator.start(entryPoint)
         coordinator.navigationController.makePresentationFullScreenForiOS13Migration()
         navigationController.present(coordinator.navigationController, animated: true)

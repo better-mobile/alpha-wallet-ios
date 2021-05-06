@@ -136,6 +136,8 @@ fileprivate extension WalletFilter {
         return WalletFilter.orderedTabs.first { $0.selectionIndex == index }
     }
 
+    
+    /// tab title:
     var title: String {
         switch self {
         case .all:

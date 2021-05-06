@@ -99,6 +99,10 @@ class AssetDefinitionStoreCoordinator: Coordinator {
         }
     }
 
+    
+    ///**************************************************************************
+    
+    
     func start() {
         deleteInboxContents()
         watchDirectoryContents {

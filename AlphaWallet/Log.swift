@@ -6,9 +6,13 @@
 //
 
 import Foundation
+
 import SwiftyBeaver
+import SwiftTrace
+//import XCGLogger
 let log = SwiftyBeaver.self
 let logger = SwiftyBeaver.self
+let tracer = SwiftTrace.self
 
 
 ////
@@ -18,6 +22,15 @@ func logPrint() -> Void {
     let file = FileDestination()  // log to default swiftybeaver.log file
     let cloud = SBPlatformDestination(appID: "foo", appSecret: "bar", encryptionKey: "123") // to cloud
 
+    
+    ///
+    /// todo x: trace
+    ///
+//     tracer.traceMainBundle(subLevels: 3)
+//    tracer.trace(anInstance: file)
+   
+    
+    
     // use custom format and set console output to short time, log level & message
     console.format = "$DHH:mm:ss$d $L $M"
     // or use this for JSON output: console.format = "$J"
@@ -46,3 +59,6 @@ func logPrint() -> Void {
     log.debug("age", context: 123)  // "DEBUG: age 123"
     log.info("my data", context: [1, "a", 2]) // "INFO: my data [1, \"a\", 2]"
 }
+
+
+

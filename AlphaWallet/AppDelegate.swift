@@ -18,12 +18,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         return ProtectionCoordinator()
     }()
 
+    
+    ///**************************************************************************
+    
+    ///
+    /// todo x: app run: 启动入口
+    ///
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
         //Necessary to make UIAlertController have the correct tint colors, despite already doing: `UIWindow.appearance().tintColor = Colors.appTint`
         window?.tintColor = Colors.appTint
 
+        
+        ///**************************************************************************
+        
         do {
             //NOTE: we move AnalyticsService creation from AppCoordinator.init method to allow easily replace
             let analyticsService = AnalyticsService()
@@ -33,8 +42,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
             navigationController.view.backgroundColor = Colors.appWhite
 
             appCoordinator = try AppCoordinator(window: window!, analyticsService: analyticsService, keystore: keystore, navigationController: navigationController)
+            
+            
+            
+            ///**************************************************************************
+            
+            
+            ///
+            /// app run:
+            ///
             appCoordinator.start()
 
+            
+            ///**************************************************************************
+            
+            
+            
+            
             if let shortcutItem = launchOptions?[UIApplication.LaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem, shortcutItem.type == Constants.launchShortcutKey {
                 //Delay needed to work because app is launching..
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -44,6 +68,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         } catch {
 
         }
+        
+        ///
+        ///
         protectionCoordinator.didFinishLaunchingWithOptions()
 
         return true
