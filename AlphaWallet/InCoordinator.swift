@@ -824,6 +824,7 @@ extension InCoordinator: UrlSchemeResolver {
     }
 }
 
+///
 extension InCoordinator: TokensCoordinatorDelegate {
     func didTapSwap(forTransactionType transactionType: TransactionType, service: SwapTokenURLProviderType, in coordinator: TokensCoordinator) {
         logTappedSwap(service: service)

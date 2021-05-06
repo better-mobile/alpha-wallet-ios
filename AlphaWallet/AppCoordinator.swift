@@ -67,6 +67,7 @@ class AppCoordinator: NSObject, Coordinator {
 
         NSLog("main app run")
         logPrint()
+        logger.debug("test msg")
 
 
         if isRunningTests() {

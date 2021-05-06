@@ -174,6 +174,7 @@ final class DappBrowserCoordinator: NSObject, Coordinator {
         }
     }
 
+    /// todo x: 打开:
     func open(url: URL, animated: Bool = true, forceReload: Bool = false) {
         //If users tap on the verified button in the import MagicLink UI, we don't want to treat it as a MagicLink to import and show the UI again. Just open in browser. This check means when we tap MagicLinks in browserOnly mode, the import UI doesn't show up; which is probably acceptable
         if !browserOnly && isMagicLink(url) {
@@ -196,6 +197,7 @@ final class DappBrowserCoordinator: NSObject, Coordinator {
         browserViewController.goTo(url: url)
     }
 
+    /// todo x:
     func signMessage(with type: SignMessageType, account: AlphaWallet.Address, callbackID: Int) {
         firstly {
             SignMessageCoordinator.promise(analyticsCoordinator: analyticsCoordinator, navigationController: navigationController, keystore: keystore, coordinator: self, signType: type, account: account, source: .dappBrowser)
@@ -275,9 +277,14 @@ final class DappBrowserCoordinator: NSObject, Coordinator {
         }
     }
 
+    /// todo x:
     private func openDappInBrowser(_ dapp: Dapp) {
         guard let url = URL(string: dapp.url) else { return }
         open(url: url, animated: false)
+        
+        
+        logger.info("web3 app: url", context: url)
+        
     }
 
     private func openDappInBrowser(_ dapp: Bookmark) {
@@ -421,7 +428,12 @@ extension DappBrowserCoordinator: TransactionConfirmationCoordinatorDelegate {
     }
 }
 
+/// todo x:
 extension DappBrowserCoordinator: BrowserViewControllerDelegate {
+    
+    ///
+    ///
+    ///
     func didCall(action: DappAction, callbackID: Int, inBrowserViewController viewController: BrowserViewController) {
         guard case .real(let account) = session.account.type else {
             browserViewController.notifyFinish(callbackID: callbackID, value: .failure(DAppError.cancelled))
@@ -430,8 +442,15 @@ extension DappBrowserCoordinator: BrowserViewControllerDelegate {
         }
 
         switch action {
+        ///
+        /// sign tx
+        ///
         case .signTransaction(let unconfirmedTransaction):
             executeTransaction(account: account, action: action, callbackID: callbackID, transaction: unconfirmedTransaction, type: .signThenSend, server: server)
+            
+        ///
+        /// send tx
+        ///
         case .sendTransaction(let unconfirmedTransaction):
             executeTransaction(account: account, action: action, callbackID: callbackID, transaction: unconfirmedTransaction, type: .signThenSend, server: server)
         case .signMessage(let hexMessage):

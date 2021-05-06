@@ -44,6 +44,7 @@ class TokenActionsService: TokenActionsServiceType {
     }
 }
 
+/// todo x: 
 extension TransactionType {
     var swapServiceInputToken: TokenObject? {
         switch self {

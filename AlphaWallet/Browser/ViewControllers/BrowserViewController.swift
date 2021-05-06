@@ -41,6 +41,8 @@ final class BrowserViewController: UIViewController {
 
     weak var delegate: BrowserViewControllerDelegate?
 
+    
+    /// todo x: webview
     lazy var webView: WKWebView = {
         let webView = WKWebView(
             frame: .zero,
